@@ -1,7 +1,9 @@
 const express = require("express");
+const fs = require("fs/promises");
 const { Server } = require("socket.io"); // se importa la clase Server
 const hanblebars = require("express-handlebars");
 const apiRouter = require("../src/routes/product.routes");
+const productsFile = require("./db/products.json");
 const PORT = 8080;
 const app = express();
 
@@ -23,21 +25,33 @@ const httpServer = app.listen(PORT, () => {
   console.log("server running in port", PORT);
 });
 
-// SOCKETS
-let products = []
+// HELPERS
+const readJson = async () => {
+  const data = await fs.readFile("./db/products.json", "utf-8");
+  const products = await JSON.parse(data);
+  return products;
+};
 
+const writeJson = async (data) => {
+  const stringData = await JSON.stringify(data, null, "\t");
+  await fs.writeFile("./db/products.json", stringData, "utf-8");
+};
+
+// SOCKETS
 const io = new Server(httpServer);
 
-app.get("/", (req, res) => {
-  res.render("home");
+app.get("/", async (req, res) => {
+  const products = await readJson();
+  res.render("home", {products} );
 });
 
 io.on("connection", (socket) => {
   console.log("nuevo user conectado");
 
-  socket.on("message", (data) => {
-    products.push(data)
-    // console.log(products)
-    io.emit("paragraph", products)
+  socket.on("message", async (data) => {
+    let products = await readJson()
+    products.push({prod: data})
+    await writeJson(products)
+    io.emit("paragraph", products);
   });
 });

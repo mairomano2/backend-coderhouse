@@ -16,9 +16,8 @@ input.addEventListener("keyup", ( event ) => {
 
 // EMITER
 socket.on("paragraph", data => {
-  console.log(data)
   let html = data.map( (product) => {
-    return `<span>Producto: ${product}</span>`
+    return `<span>Producto: ${product.prod}</span>`
   })
   paragraph.innerHTML = html
 })
