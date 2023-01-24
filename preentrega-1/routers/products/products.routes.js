@@ -3,8 +3,6 @@ const router = Router(); //se crea una instancia del router
 const ProductManager = require("../../manager/manajers");
 const manager = new ProductManager("products.json");
 
-//TODO ver que devuelva error si el id no se encuentra en getById
-
 //RUTAS
 // GET -> trae todos los productos
 router.get("/", async (req, res) => {
