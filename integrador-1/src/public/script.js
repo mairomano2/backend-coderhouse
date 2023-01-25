@@ -25,3 +25,4 @@ socket.on("renderMessage", (data) => {
 });
 
 //TODO ver que actualice en tiempo real. ahora solo lo hace cuando se envia un nuevo mensaje
+// ver de sacar la coma cada vez que se manda un msj

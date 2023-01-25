@@ -4,6 +4,7 @@ const productRoutes = require("./routers/products.routes");
 const cartsRoutes = require("./routers/carts.routes");
 const chatsRoutes = require("./routers/chat.routes");
 const { Server } = require("socket.io");
+const mongoose = require("mongoose")
 const PORT = process.env.PORT || 8080;
 const app = express();
 
