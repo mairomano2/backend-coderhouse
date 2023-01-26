@@ -36,9 +36,10 @@ io.on("connection", (socket) => {
 });
 
 // ROUTES
+
 app.get("/", (req, res) => {
-  res.status(200).send("Hola");
-});
+  res.send("app")
+})
 
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartsRoutes);
