@@ -1,42 +1,44 @@
-const { Router, application } = require("express")
-const router = Router()
-const productsModel = require ("../models/products.models")
-const FsManager = require("../dao/fsManagers/fsManager")
-const options = require("../mongoDbConfig/options")
-const fsManager = new FsManager(options.fileSystem.products)
+const { Router } = require("express");
+const router = Router();
+const productsModel = require("../models/products.models");
+const options = require("../mongoDbConfig/options");
+const ProductManagerMongo = require("../dao/mongoManagers/productManagerMongo");
 
-//TODO agregar funciones de mongo
+//FS IMPORTS
+// const FsManager = require("../dao/fsManagers/fsManager")
+// const fsManager = new FsManager(options.fileSystem.products)
+
+const productManagerMongo = new ProductManagerMongo(options.mongoDb.url);
+
 router.get("/", async (req, res) => {
-  const products = await fsManager.getItems();
+  // const products = await fsManager.getItems()
+  const products = await productManagerMongo.getAll();
   const limit = Number(req.query.limit);
 
-  if (isNaN(limit)) {
-    res.status(400).send("el parametro debe ser un numero");
-  } else {
-    
-    if (limit) {
-      const limitProducts = products.slice(0, limit);
-      res.json({
-        status: "success",
-        data: limitProducts,
-      });
-    } else {
-      res.json({
-        status: "success",
-        data: products,
-      });
+  if (limit) {
+    if (isNaN(limit)) {
+      res.status(400).send("el parametro debe ser un numero");
     }
+    const limitProducts = products.slice(0, limit);
+    res.status(200).json({
+      status: "success",
+      data: limitProducts,
+    });
+  } else {
+    res.status(200).json({
+      status: "success",
+      data: products,
+    });
   }
 });
 
 //  GET -> trae un prod en especifico
 router.get("/:pid", async (req, res) => {
-  const pid = Number(req.params.pid);
-  const data = await fsManager.getItemById(pid);
-
-  if (isNaN(pid)) {
-    res.status(400).send("el id debe ser un numero");
-  }
+  const pid = req.params.pid;
+  console.log(pid)
+  // const data = await fsManager.getItemById(pid)
+  const data = await productManagerMongo.getProductById(pid);
+  console.log(data)
 
   if (data) {
     res.json({
@@ -44,65 +46,51 @@ router.get("/:pid", async (req, res) => {
       data: data,
     });
   } else {
-    res.status(400).send("invalid data");
+    res.status(404).send("id not found");
   }
 });
 
-// POST -> agrega un producto al array de productos
+// // POST -> agrega un producto al array de productos
 router.post("/", async (req, res) => {
-  const product = req.body;
-  if (
-    !product.title ||
-    !product.description ||
-    !product.price ||
-    !product.code ||
-    !product.status ||
-    !product.category ||
-    !product.thumbnails
-  ) {
-    res.status(400).send("todos los campos deben ser obligatorios");
-  } else {
-    res.json({
-      status: "succes",
-      data: await fsManager.addProduct(product),
-    });
-  }
+  res.json({
+    status: "succes",
+    // data: await fsManager.addProduct(product)
+    data: await productsModel.create(product),
+  });
 });
 
-// PUT -> -> actualiza por los campos enviados desde body
+// // PUT -> -> actualiza por los campos enviados desde body
 router.put("/:pid", async (req, res) => {
-  const pid = Number(req.params.pid);
+  const pid = req.params.pid;
   const fieldsToUpdate = req.body;
-  const foundId = fieldsToUpdate.hasOwnProperty("id");
-  const data = await fsManager.updateProduct(pid, fieldsToUpdate)
-  console.log(data)
+  const foundId = fieldsToUpdate.hasOwnProperty("_id");
+  console.log(foundId);
+  // const data = await fsManager.updateProduct(pid, fieldsToUpdate)
+  const data = await productManagerMongo.updateProduct(pid, fieldsToUpdate);
 
   if (foundId) {
     res.status(400).send("no se puede modificar la propiedad id");
   } else {
-    if(data){
+    if (data) {
       res.json({
         status: "succes",
-        data: data
+        data: data,
       });
     } else {
-      res.status(400).send("no se encontro el producto")
+      res.status(400).send("no se encontro el producto");
     }
   }
 });
 
-// DELETE -> borra un producto segun id
+// // DELETE -> borra un producto segun id
 router.delete("/:pid", async (req, res) => {
-  const pid = Number(req.params.pid);
-
-  if (isNaN(pid)) {
-    res.status(400).send("el parametro debe ser un numero");
-  } else {
-    res.json({
-      status: "succes",
-      data: await fsManager.deleteProduct(pid),
-    });
-  }
+  const pid = req.params.pid;
+  const data = await productManagerMongo.deleteProduct(pid)
+  res.json({
+    status: "succes",
+    // data: await fsManager.deleteProduct(pid),
+    data: data
+  });
 });
 
-module.exports = router
+module.exports = router;

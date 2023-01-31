@@ -3,9 +3,9 @@ const hanblebars = require("express-handlebars");
 const productRoutes = require("./routers/products.routes");
 const cartsRoutes = require("./routers/carts.routes");
 const chatsRoutes = require("./routers/chat.routes");
+require("./mongoDbConfig/dbConfig");
 const { Server } = require("socket.io");
-const mongoose = require("mongoose")
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 27017;
 const app = express();
 
 // MEEDLEWARES
@@ -25,21 +25,19 @@ const httpServer = app.listen(PORT, () => {
 
 // SOCKETS
 const io = new Server(httpServer);
-let messagesDB = []
+let messagesDB = [];
 
 io.on("connection", (socket) => {
-
   socket.on("message", (data) => {
-    messagesDB.push(data)
-    socket.emit("renderMessage", messagesDB)
+    messagesDB.push(data);
+    socket.emit("renderMessage", messagesDB);
   });
 });
 
 // ROUTES
-
 app.get("/", (req, res) => {
-  res.send("app")
-})
+  res.send("app");
+});
 
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartsRoutes);

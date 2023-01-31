@@ -1,11 +1,10 @@
-const mongoose = require("mongoose")
-const options = require("./options")
+const mongoose = require("mongoose");
+const options = require("./options");
 
-// DB CONNECTION
-mongoose.set("strictQuery", false)
-mongoose.connect(options.monoDB.url, (err) => {
-  if(err){
-    console.log("Hubo un error: ", err)
+mongoose.set("strictQuery", false);
+mongoose.connect(options.mongoDb.url, (error) => {
+  if (error) {
+    return console.log(`db connection failed: ${error}`);
   }
-  console.log("conexion exitosa")
-})
+  console.log("connected to db");
+});

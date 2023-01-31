@@ -1,11 +1,12 @@
-const mongoose = require("mongoose")
-const chatColletcion = "chat"
+const mongoose = require("mongoose");
+const chatColletcion = "chatColection";
 
 const chatSchema = new mongoose.Schema({
   userName: {
     type: String,
-    require: true
-  }
-})
+    require: true,
+  },
+});
 
-module.exports = mongoose.model(chatColletcion, chatSchema)
+const chatModel = mongoose.model(chatColletcion, chatSchema);
+module.exports = chatModel;
