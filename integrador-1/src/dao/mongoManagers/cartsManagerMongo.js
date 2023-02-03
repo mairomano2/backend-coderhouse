@@ -6,24 +6,27 @@ class CartsManager {
     return carts;
   }
 
-  async getAll(){
-    const carts = await cartsModel.find()
-    return carts
+  async getAll() {
+    const carts = await cartsModel.find();
+    return carts;
   }
 
   async getCartById(cid) {
-    const cart = await cartsModel.findOne({ cid });
+    const cart = await cartsModel.findOne({ _id: cid });
     return cart;
   }
 
   async addToCart(cid, pid) {
     let carts = await cartsModel.find();
 
+    //busca si existe algun obj dentro de cart con un order id === al cid
     const order = carts.find((o) => o.orderId === cid);
 
+    //si existe empieza a bscar dentro de productos
     if (order) {
       const productExists = order.products.find((prod) => prod.prodId === pid);
 
+      //si el producto existe le suma 1 en cantidad
       if (productExists) {
         const orderPosition = carts.findIndex((order) => order.orderId === cid);
         const updateProduct = carts[orderPosition].products.findIndex(
@@ -36,6 +39,8 @@ class CartsManager {
           updateProduct.quantity + 1;
         await cartsModel.create(carts);
         return carts;
+
+        //sino agrega un nuevo obj con el prod id y cantidad en 1
       } else {
         const newProduct = { prodId: pid, quiantity: 1 };
         const orderPosition = carts.findIndex((order) => order.orderId === cid);
@@ -45,6 +50,8 @@ class CartsManager {
           return carts;
         }
       }
+
+    // como no existe el id de la orden se agrega uno nuevo
     } else {
       const newOrder = {
         orderId: carts.length + 1,

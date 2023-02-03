@@ -12,26 +12,19 @@ class ProductManagerMongo {
   }
 
   async getProductById(id) {
-    const product = await productsModel.findOne({ id });
-    return product;
+    console.log("products");
+    const products = await productsModel.findById({ _id: id });
+    return products;
   }
 
-  async updateProduct(product, id) {
-    const updatedUser = await productsModel.findByIdAndUpdate({ id }, product, {
-      new: true,
-    });
-    return updatedUser;
+  async updateProduct(id, product) {
+    let updatedProduct = await productsModel.findByIdAndUpdate(id, product);
+    console.log(updatedProduct)
+    return updatedProduct;
   }
 
   async deleteProduct(id) {
-    const deletedProduct = await productsModel.findByIdAndDelete(
-      { id },
-      (err) => {
-        if (err) {
-          console.log("hubo un error: ", err);
-        }
-      }
-    );
+    const deletedProduct = await productsModel.findByIdAndDelete(id)
     return deletedProduct;
   }
 }

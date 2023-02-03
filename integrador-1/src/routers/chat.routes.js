@@ -1,10 +1,16 @@
 const { Router } = require("express")
-const chatModel = require("../models/chat.models")
 const router = Router()
+const options = require("../mongoDbConfig/options")
+const ChatManagerMongo = require("../dao/mongoManagers/chatMongoManager")
+
+const chatManager = new ChatManagerMongo(options.mongoDb.url)
 
 router.get("/", async (req, res) => {
-  // let chat = await chatModel.find()
-  res.status(200).render("chat")
+  const data = await chatManager.getMessages()
+  res.json({
+    status: "success",
+    data : data
+  })
 })
 
 module.exports = router

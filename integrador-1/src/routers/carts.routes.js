@@ -1,6 +1,5 @@
 const { Router } = require("express");
 const router = Router();
-const cartsModel = require("../models/carts.models");
 const options = require("../mongoDbConfig/options");
 const CartsManagerMongo = require("../dao/mongoManagers/cartsManagerMongo");
 
@@ -11,19 +10,20 @@ const CartsManagerMongo = require("../dao/mongoManagers/cartsManagerMongo");
 const cartsManagerMongo = new CartsManagerMongo(options.mongoDb.url);
 
 router.get("/", async (req, res) => {
+  const data = await cartsManagerMongo.getAll();
   res.json({
     status: "success",
-    data: await cartsManagerMongo.getAll()
+    data: data
   })
-})
+});
 
 router.get("/:cid", async (req, res) => {
   const cid = req.params.cid;
+  const data = await cartsManagerMongo.getCartById(cid);
   res.json({
     status: "success",
-    // data: await cartsManager.getItemById(cid),
-    data: await cartsManagerMongo.getCartById(cid)
-  });
+    data: data
+  })
 });
 
 // POST -> cid/produc/pid agrega un prod a un cart ya creado. si ya existe ese prod solo se agrega uno en la cantidad
@@ -35,8 +35,8 @@ router.post("/:cid/product/:pid", async (req, res) => {
 
   res.json({
     status: "success",
-    data: data,
-  });
+    data: data
+  })
 });
 
 module.exports = router;

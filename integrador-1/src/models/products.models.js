@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 const productsCollection = "productsCollection";
 
 const productsSchema = new mongoose.Schema({
-  _id: {
-    type: String,
-    required: true
-  },
   title: {
     type: String,
     required: true,
