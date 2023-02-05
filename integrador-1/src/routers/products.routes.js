@@ -3,15 +3,11 @@ const router = Router();
 const options = require("../mongoDbConfig/options");
 const ProductManagerMongo = require("../dao/mongoManagers/productManagerMongo");
 
-//FS IMPORTS
-// const FsManager = require("../dao/fsManagers/fsManager")
-// const fsManager = new FsManager(options.fileSystem.products)
-
 const productManagerMongo = new ProductManagerMongo(options.mongoDb.url);
 
 router.get("/", async (req, res) => {
-  // const products = await fsManager.getItems()
   const products = await productManagerMongo.getAll();
+  
   const limit = Number(req.query.limit);
 
   if (limit) {
@@ -24,22 +20,14 @@ router.get("/", async (req, res) => {
       data: limitProducts,
     });
   } else {
-    console.log(products[0].title);
-    res.render("products", products );
-    // res.json({
-    //   status: "success",
-    //   data: products
-    // });
+    res.render("products", products);
   }
 });
 
 //  GET -> trae un prod en especifico
 router.get("/:pid", async (req, res) => {
   const pid = req.params.pid;
-  console.log(pid);
-  // const data = await fsManager.getItemById(pid)
   const data = await productManagerMongo.getProductById(pid);
-  console.log(data);
 
   if (data) {
     res.json({
@@ -57,7 +45,6 @@ router.post("/", async (req, res) => {
   const data = await productManagerMongo.saveProduct(product);
   res.json({
     status: "succes",
-    // data: await fsManager.addProduct(product)
     data: data,
   });
 });
@@ -65,10 +52,8 @@ router.post("/", async (req, res) => {
 // // PUT -> -> actualiza por los campos enviados desde body
 router.put("/:pid", async (req, res) => {
   const pid = req.params.pid;
-  const fieldsToUpdate = req.body.title;
+  const fieldsToUpdate = req.body;
   const foundId = fieldsToUpdate.hasOwnProperty("_id");
-  console.log(foundId);
-  // const data = await fsManager.updateProduct(pid, fieldsToUpdate)
   const data = await productManagerMongo.updateProduct(pid, fieldsToUpdate);
 
   if (foundId) {
@@ -91,7 +76,6 @@ router.delete("/:pid", async (req, res) => {
   await productManagerMongo.deleteProduct(pid);
   res.json({
     status: "succes",
-    // data: await fsManager.deleteProduct(pid)
   });
 });
 

@@ -12,7 +12,8 @@ class CartsManager {
   }
 
   async getCartById(cid) {
-    const cart = await cartsModel.findOne({ _id: cid });
+    console.log(cid)
+    const cart = await cartsModel.findById({ _id: cid });
     return cart;
   }
 

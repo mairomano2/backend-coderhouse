@@ -6,11 +6,8 @@ const ChatManagerMongo = require("../dao/mongoManagers/chatMongoManager")
 const chatManager = new ChatManagerMongo(options.mongoDb.url)
 
 router.get("/", async (req, res) => {
-  const data = await chatManager.getMessages()
-  res.json({
-    status: "success",
-    data : data
-  })
+  const messages = await chatManager.getMessages()
+  res.render("chat", messages)
 })
 
 module.exports = router

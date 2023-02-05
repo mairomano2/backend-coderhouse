@@ -16,7 +16,7 @@ app.set("view engine", "handlebars");
 // MEEDLEWARES
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public"));
+app.use(express.static("../public"));
 
 // RUN SERVER
 const httpServer = app.listen(PORT, () => {
@@ -29,12 +29,14 @@ const io = new Server(httpServer);
 io.on("connection", (socket) => {
   console.log("New client connected");
   app.set("socket", socket);
+  //hacer llamada a la db
+  socket.emit("showMessages")
 });
 
-io.on("message", () => {
-  socket.emit("renderMessage", data => {
-    console.log(data)
-  })
+io.on("message", (message) => {
+  console.log(message.username)
+  //aca tendria que guardar la data del mensaje
+  socket.emit("renderMessage")
 })
 
 // ROUTES

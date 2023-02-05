@@ -3,18 +3,20 @@ const router = Router();
 const options = require("../mongoDbConfig/options");
 const CartsManagerMongo = require("../dao/mongoManagers/cartsManagerMongo");
 
-//FS IMPORTS
-// const CartsManager = require("../dao/fsManagers/fsManager")
-// const cartsManager = new CartsManager("./dbFileSystem/carts.json")
-
 const cartsManagerMongo = new CartsManagerMongo(options.mongoDb.url);
 
 router.get("/", async (req, res) => {
   const data = await cartsManagerMongo.getAll();
-  res.json({
-    status: "success",
-    data: data
-  })
+  const carts = {
+    carts: data.map( c => {
+      return{
+        _id: c._id,
+        products: c.products
+      }
+    })
+  }
+  console.log(carts)
+  res.render("carts", carts)
 });
 
 router.get("/:cid", async (req, res) => {
@@ -30,7 +32,6 @@ router.get("/:cid", async (req, res) => {
 router.post("/:cid/product/:pid", async (req, res) => {
   const cid = req.params.cid;
   const pid = req.params.pid;
-  // const data = await cartsManager.addToCart(cid, pid)
   const data = await cartsManagerMongo.addToCart(cid, pid);
 
   res.json({
