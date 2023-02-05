@@ -1,23 +1,27 @@
 const { Router } = require("express");
 const router = Router();
 const options = require("../mongoDbConfig/options");
+const productsModel = require("../models/products.models");
 const ProductManagerMongo = require("../dao/mongoManagers/productManagerMongo");
 
 const productManagerMongo = new ProductManagerMongo(options.mongoDb.url);
 
 router.get("/", async (req, res) => {
   const products = await productManagerMongo.getAll();
-  
-  const limit = Number(req.query.limit);
 
-  if (limit) {
-    if (isNaN(limit)) {
-      res.status(400).send("el parametro debe ser un numero");
-    }
-    const limitProducts = products.slice(0, limit);
+  const limit = req.query.limit;
+  const page = req.query.page;
+  const queryParam = req.query.query;
+  const sort = req.query.sort;
+
+  if (limit || page || queryParam || sort) {
+    const paginatedProducts = await productsModel.paginate(
+      { query: queryParam },
+      // { limit: limit, page: page, sort: "-title" }
+    )
     res.json({
       status: "success",
-      data: limitProducts,
+      data: paginatedProducts,
     });
   } else {
     res.render("products", products);
