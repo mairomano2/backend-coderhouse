@@ -32,7 +32,6 @@ class ProductManagerMongo {
 
   async updateProduct(id, fieldsToUpdate) {
     let updatedProduct = await productsModel.findByIdAndUpdate(id, fieldsToUpdate);
-    console.log(updatedProduct)
     return updatedProduct;
   }
 

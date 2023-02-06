@@ -17,37 +17,37 @@ class CartsManager {
     return cart;
   }
 
+  // arreglar esta funcion para que mande los datos segun la logica
   async addToCart(cid, pid) {
     let carts = await cartsModel.find();
 
     //busca si existe algun obj dentro de cart con un order id === al cid
-    const order = carts.find((o) => o.orderId === cid);
+    const order = carts.find((o) => o._id == cid );
 
-    //si existe empieza a bscar dentro de productos
+    //si existe empieza a buscar dentro de productos
     if (order) {
-      const productExists = order.products.find((prod) => prod.prodId === pid);
-
+      const productExists = order.products.find((prod) => prod._id.toString() === pid);
       //si el producto existe le suma 1 en cantidad
       if (productExists) {
-        const orderPosition = carts.findIndex((order) => order.orderId === cid);
-        const updateProduct = carts[orderPosition].products.findIndex(
-          (prod) => prod.prodId === pid
+        const orderPosition = carts.findIndex((order) => order._id.toString() === cid);
+
+        const productPosition = carts[orderPosition].products.findIndex(
+          (prod) => prod._id.toString() === pid
         );
-        const productPosition = cart[orderPosition].products.findIndex(
-          (prod) => prod.prodId === pid
-        );
-        carts[orderPosition].products[productPosition].quantity =
-          updateProduct.quantity + 1;
+        console.log("productPositon", productPosition)
+        carts[orderPosition].products[productPosition].quantity++
         await cartsModel.create(carts);
         return carts;
 
         //sino agrega un nuevo obj con el prod id y cantidad en 1
       } else {
-        const newProduct = { prodId: pid, quiantity: 1 };
-        const orderPosition = carts.findIndex((order) => order.orderId === cid);
-        if (orderPosition <= 0) {
-          carts[orderPosition].products.push(newProduct);
-          await cartsModel.create(carts);
+        console.log("agregar prod y qnt")
+        const newProduct = { quiantity: 3 };
+        const orderPosition = carts.findIndex((order) => order._id.toString() === cid);
+        const newCart = carts[orderPosition].products.push(newProduct)
+        console.log(orderPosition)
+        if (orderPosition >= 0) {
+          cartsModel.create(newCart)
           return carts;
         }
       }
@@ -56,10 +56,9 @@ class CartsManager {
     } else {
       const newOrder = {
         orderId: carts.length + 1,
-        products: [{ prodId: pid, quantity: 1 }],
+        products: [{ quantity: 1 }],
       };
-      carts.push(newOrder);
-      await cartsModel.create(carts);
+      await cartsModel.create(newOrder);
       return carts;
     }
   }

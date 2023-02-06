@@ -16,9 +16,11 @@ router.get("/", async (req, res) => {
 
   if (limit || page || queryParam || sort) {
     const paginatedProducts = await productsModel.paginate(
+      // los query params tienen que ser categoria o si hay en sstock
       { query: queryParam },
-      // { limit: limit, page: page, sort: "-title" }
-    )
+      { limit: limit, page: page, sort: "-title" }
+    ).sort({field: "price", test: sort})
+    
     res.json({
       status: "success",
       data: paginatedProducts,

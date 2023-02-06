@@ -31,18 +31,25 @@ io.on("connection", (socket) => {
   app.set("socket", socket);
   //hacer llamada a la db
   socket.emit("showMessages")
+  
+  socket.on("message", (message) => {
+    console.log(message)
+    //aca tendria que guardar la data del mensaje
+    socket.emit("renderMessage", message)
+  })
 });
 
-io.on("message", (message) => {
-  console.log(message.username)
-  //aca tendria que guardar la data del mensaje
-  socket.emit("renderMessage")
-})
 
 // ROUTES
 app.get("/", (req, res) => {
   res.send("app");
 });
+
+app.get("/products", (req, res) => {
+  // devuelve todos los productos con paginacion
+  // deben tener un boton de agregar al carrito desde aca
+  // llevar a una nueva vista que sea getCartById
+})
 
 app.use("/api/products", productRoutes);
 app.use("/api/carts", cartsRoutes);

@@ -3,17 +3,12 @@ const cartsCollection = "carts";
 const mongoosePaginate = require("mongoose-paginate-v2")
 
 const cartsSchema = new mongoose.Schema({
-  _id: { 
-    type: String
-  },
-  products: {
-    productId: {
-      type: String
-    },
+  products: [{
+    productId : mongoose.Schema.Types.ObjectId,
     quantity: {
       type: Number
     }
-  }
+  }]
 });
 
 cartsSchema.plugin(mongoosePaginate)

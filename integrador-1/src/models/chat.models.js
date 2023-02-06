@@ -4,7 +4,7 @@ const chatColletcion = "chats";
 const chatSchema = new mongoose.Schema({
   userName: {
     type: String,
-    require: true,
+    required: true,
   },
   message: {
     type: String,

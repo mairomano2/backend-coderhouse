@@ -17,11 +17,11 @@ input.addEventListener("keyup", (event) => {
 });
 
 //renderiza el mensaje
-socket.on("showMessages", (messages) => {
-  console.log(messages)
-  //TODO aca no llega la info de los mensajes
-  let html = messages.map((message) => {
-    return `<p>${message.username}: ${message.newMessage}</p>`;
-  });
-  messagesDiv.innerHTML = html;
-});
+// socket.on("showMessages", (messages) => {
+//   console.log("msj")
+//   //TODO aca no llega la info de los mensajes
+//   let html = messages.map((message) => {
+//     return `<p>${message.username}: ${message.newMessage}</p>`;
+//   });
+//   messagesDiv.innerHTML = html;
+// });
