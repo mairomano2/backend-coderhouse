@@ -7,23 +7,37 @@ const ProductManagerMongo = require("../dao/mongoManagers/productManagerMongo");
 const productManagerMongo = new ProductManagerMongo(options.mongoDb.url);
 
 router.get("/", async (req, res) => {
-  const products = await productManagerMongo.getAll();
+  const queries = {
+    limit: req.query.limit,
+    page: req.query.page,
+    queryParam: req.query,
+    sort: req.query.sort,
+  };
 
-  const limit = req.query.limit;
-  const page = req.query.page;
-  const queryParam = req.query.query;
-  const sort = req.query.sort;
+  const products = await productManagerMongo.getAll(queries);
 
-  if (limit || page || queryParam || sort) {
-    const paginatedProducts = await productsModel.paginate(
-      // los query params tienen que ser categoria o si hay en sstock
-      { query: queryParam },
-      { limit: limit, page: page, sort: "-title" }
-    ).sort({field: "price", test: sort})
-    
+  if (queries.limit || queries.page || queries.queryParam || queries.sort) {
+    const paginatedProducts = await productsModel()
+
     res.json({
       status: "success",
-      data: paginatedProducts,
+      payload: paginatedProducts,
+      totalPages: products.totalPages,
+      prevPage: products.prevPage,
+      nextPage: products.nextPage,
+      page: products.page,
+      hasPrevPage: products.hasPrevPage,
+      hasNextPage: products.hasNextPage,
+      nextLink: `${
+        paginatedProducts.hasNextPage
+          ? `http://localhost:8080${req.baseUrl}/?limit=${limit}&page=${paginatedProducts.nextPage}`
+          : null
+      }`,
+      prevLink: `${
+        paginatedProducts.hasPrevPage
+          ? `http://localhost:8080${req.baseUrl}/?page=/${paginatedProducts.prevPage}`
+          : null
+      }`,
     });
   } else {
     res.render("products", products);

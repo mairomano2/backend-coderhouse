@@ -5,6 +5,8 @@ const productRoutes = require("./routers/products.routes");
 const cartsRoutes = require("./routers/carts.routes");
 const chatsRoutes = require("./routers/chat.routes");
 const { Server } = require("socket.io");
+const ChatManager = require("./dao/mongoManagers/chatMongoManager");
+const chatModel = require("./models/chat.models");
 const PORT = process.env.PORT || 8080;
 const app = express();
 
@@ -25,20 +27,20 @@ const httpServer = app.listen(PORT, () => {
 
 // SOCKETS
 const io = new Server(httpServer);
+const chatManager = new ChatManager()
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("New client connected");
   app.set("socket", socket);
   //hacer llamada a la db
-  socket.emit("showMessages")
+  const data = await chatManager.getMessages()
+  socket.emit("showMessages", data)
   
-  socket.on("message", (message) => {
-    console.log(message)
-    //aca tendria que guardar la data del mensaje
-    socket.emit("renderMessage", message)
+  socket.on("newMessage", async (msj) => {
+    await chatManager.saveMessage(msj)
+    socket.emit("showMessage", data)
   })
 });
-
 
 // ROUTES
 app.get("/", (req, res) => {
