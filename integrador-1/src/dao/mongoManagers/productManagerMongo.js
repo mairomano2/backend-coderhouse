@@ -4,18 +4,22 @@ class ProductManagerMongo {
   async getAll(queries) {
     const filter = queries.queryParam ? queries.queryParam  : {};
     // || {status : Boolean(queries.queryParam)}
-    console.log("queries ", filter)
     const options = {
-      sort_: queries.sort ? { price: queries.sort } : {},
+      // query: queries.queryParam ? queries.queryParam : {},
+      sort: queries.sort ? { price: queries.sort } : {},
       limit: queries.limit || 10,
       page: queries.page || 1,
     };
+    
+    console.log("queries ", filter)
+    const data = await productsModel.paginate( filter, options);
+    // const data = await productsModel.find()
 
-    const data = await productsModel.paginate(filter, options);
-
+    console.log('ProductManager data ---')
     console.log(data);
     const products = {
-      products: data.docs.map((p) => {
+      products: data.docs
+      .map((p) => {
         return {
           title: p.title,
           description: p.description,

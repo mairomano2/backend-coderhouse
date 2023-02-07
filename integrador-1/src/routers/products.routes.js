@@ -15,6 +15,7 @@ router.get("/", async (req, res) => {
   };
 
   const products = await productManagerMongo.getAll(queries);
+  // console.log("p", products)
 
   if (queries.limit || queries.page || queries.queryParam || queries.sort) {
     const paginatedProducts = await productsModel()
