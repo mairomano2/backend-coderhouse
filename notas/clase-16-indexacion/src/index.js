@@ -55,7 +55,7 @@ app.post("/population/addStudent", async (req, res) => {
   const studentId = req.body.studentId
   const courseId = req.body.courseId
   // el primer parametro es la coleccion a la que se agrega la info y la segunda la propiedad a agregar
-  await CoursesModel.findOneAndUpdate( {_id:courseId}, {$push: {students: studentId}}).populate(students)
+  await CoursesModel.findOneAndUpdate( {_id:courseId}, {$push: {students: studentId}}).populate(student)
   res.send("usuario agregado con exito")
 
 })
@@ -78,6 +78,7 @@ app.get("/populate/:courseId", async (req, res) => {
 })
 
 // populate con meddlewere
+// get /:cid
 app.get("/pre/:courseId", async (req, res) => {
   const courseId = req.params.courseId
   // no se llama a populate porque se hace desde el schema

@@ -6,6 +6,7 @@ const ProductManagerMongo = require("../dao/mongoManagers/productManagerMongo");
 
 const productManagerMongo = new ProductManagerMongo(options.mongoDb.url);
 
+// GET -> trae productos con query params
 router.get("/", async (req, res) => {
   const queries = {
     limit: req.query.limit,
@@ -15,7 +16,6 @@ router.get("/", async (req, res) => {
   };
 
   const products = await productManagerMongo.getAll(queries);
-  // console.log("p", products)
 
   if (queries.limit || queries.page || queries.queryParam || queries.sort) {
     const paginatedProducts = await productsModel()

@@ -2,24 +2,19 @@ const productsModel = require("../../models/products.models");
 
 class ProductManagerMongo {
   async getAll(queries) {
-    const filter = queries.queryParam ? queries.queryParam  : {};
-    // || {status : Boolean(queries.queryParam)}
+    const filter = queries.queryParam ? queries.queryParam : {};
     const options = {
-      // query: queries.queryParam ? queries.queryParam : {},
       sort: queries.sort ? { price: queries.sort } : {},
       limit: queries.limit || 10,
       page: queries.page || 1,
     };
     
-    console.log("queries ", filter)
     const data = await productsModel.paginate( filter, options);
-    // const data = await productsModel.find()
-
+    console.log("d ", data)
+    
     console.log('ProductManager data ---')
-    console.log(data);
     const products = {
-      products: data.docs
-      .map((p) => {
+      products: data.docs.map((p) => {
         return {
           title: p.title,
           description: p.description,
