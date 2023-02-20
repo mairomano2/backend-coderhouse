@@ -3,7 +3,6 @@ const fs = require("fs/promises");
 const { Server } = require("socket.io"); // se importa la clase Server
 const hanblebars = require("express-handlebars");
 const apiRouter = require("../src/routes/product.routes");
-const productsFile = require("./db/products.json");
 const PORT = 8080;
 const app = express();
 
