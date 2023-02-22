@@ -1,0 +1,11 @@
+<div>
+  <h1>Profile</h1>
+  <p>Name: {{user.firstName}}</p>
+  <p>{{user.lastName}}</p>
+  <p>{{user.age}}</p>
+  {{#if user.isAdmin}}
+  <p>Rol: Admin</p>
+  {{else}}
+  <p>Rol: User</p>
+  {{/if}}
+</div>

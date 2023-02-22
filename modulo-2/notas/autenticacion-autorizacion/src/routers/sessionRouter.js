@@ -3,6 +3,7 @@ const router = Router();
 const userModel = require("../models/user.model");
 const passportMiddlware = require("../middlewares/passport.middleware");
 const { hashPassword, isValidPassword } = require("../utils/utils");
+const passport = require("../middlewares/passport.middleware");
 
 router.get("/register", (req, res) => {
   if (req.session.user) {
@@ -23,41 +24,64 @@ router.get("/login", (req, res) => {
 router.post(
   "/register",
   // autenticate recibe el primer param obligatorio que es el metodo con el cual se va a autenticar, un segundo opcional y una funcion de controlador
-  passportMiddlware.authenticate(
-    "register",
-    {
-      // tiene que ser igual al declarado en el middleware
-      failureRedirect: "/register", // funciona como un redirect en caso de que algo salga mal
-    },
-    (req, res) => {
-      const sessionUser = {
-        firstName: req.user.firstName,
-        lastName: req.user.lastName,
-        age: req.user.age,
-        email: req.user.email,
-      };
-      req.session.user = sessionUser;
-      res.redirect("/profile")
-    }
-  )
+  passportMiddlware.authenticate("register", {
+    // tiene que ser igual al declarado en el middleware
+    failureRedirect: "/register", // funciona como un redirect en caso de que algo salga mal
+  }),
+  // callback controlador
+  (req, res) => {
+    console.log("sessionR req", req.session.passport.user);
+    const sessionUser = {
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      age: req.user.age,
+      email: req.user.email,
+    };
+    req.session.user = sessionUser;
+    res.status(400).send("registrado con exito")
+  }
 );
 
 router.post(
   "/login",
   // autenticate recibe el primer param obligatorio que es el metodo con el cual se va a autenticar, un segundo opcional y una funcion de controlador
-  passportMiddlware.authenticate(
-    "login",
-    {
-      // tiene que ser igual al declarado en el middleware
-      failureRedirect: "/login", // funciona como un redirect en caso de que algo salga mal
-    },
-    // se guardan los datos de la sesion y se hace el redirect
-    (req, res) => {
-      if (!req.user) {
-        return res
-          .status(400)
-          .json({ status: "error", error: "Wrtong user or password" });
-      }
+  passportMiddlware.authenticate("login", {
+    // tiene que ser igual al declarado en el middleware
+    failureRedirect: "/login", // funciona como un redirect en caso de que algo salga mal
+  }),
+  // se guardan los datos de la sesion y se hace el redirect
+  (req, res) => {
+    if (!req.session.user) {
+      return res
+        .status(400)
+        .json({ status: "error", error: "Wrtong user or password" });
+    }
+    // se guarda la sesion
+    const sessionUser = {
+      firstName: req.user.firstName,
+      lastName: req.user.lastName,
+      age: req.user.age,
+      email: req.user.email,
+    };
+    req.session.user = sessionUser;
+    res.status(400).send("logeado con exito");
+  }
+);
+
+// AUTENTICACION CON GITHUB
+// sea crea el middleware para la autenticacion
+router.get(
+  "/github",
+  passport.authenticate("github", { scope: ["user:email"] })
+);
+
+router.get(
+  "/github/callback",
+  passport.authenticate(
+    "github",
+    { failureRedirect: "api/session/login" },
+    async (req, res) => {
+      console.log(req.user)
       const sessionUser = {
         firstName: req.user.firstName,
         lastName: req.user.lastName,
@@ -69,6 +93,21 @@ router.post(
     }
   )
 );
+
+router.get("/logout", (req, res) => {
+  if (req.session.user) {
+    req.session.destroy((err) => {
+      if (err) {
+        console.log(err);
+      } else {
+        res.clearCookie("session1");
+        res.redirect("/");
+      }
+    });
+  } else {
+    res.send("no se puede desloggear si no esta logeado");
+  }
+});
 
 // AUTENTICACION SIN PASSPORT
 // router.post("/register", async (req, res) => {
@@ -130,21 +169,6 @@ router.post(
 //     }
 //   } else {
 //     res.render("/api/session/login");
-//   }
-// });
-
-// router.get("/logout", (req, res) => {
-//   if (req.session.user) {
-//     req.session.destroy((err) => {
-//       if (err) {
-//         console.log(err);
-//       } else {
-//         res.clearCookie("session1");
-//         res.redirect("/");
-//       }
-//     });
-//   } else {
-//     res.send("no se puede desloggear si no esta logeado");
 //   }
 // });
 

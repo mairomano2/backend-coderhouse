@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   email: { type: String, unique: true },
   age: { type: Number },
   password: { type: String },
+  githubLogin: { type: String, unique: true}
 });
 
 const userModel = mongoose.model(userCollection, userSchema);

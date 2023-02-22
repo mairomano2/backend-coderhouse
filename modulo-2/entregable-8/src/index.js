@@ -1,14 +1,12 @@
 const express = require("express");
-const mongoose = require("mongoose")
 const hanblebars = require("express-handlebars");
 const MongoStore = require("connect-mongo")
+const sessionRouter = require("./routers/sessionRouter");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-const passport = require("passport")
 const authMeddleware = require("./middlewares/auth.meddleware");
-const sessionRouter = require("./routers/sessionRouter");
 const PORT = process.env.PORT || 8080;
-const MONGO_URL = process.env.MONGO_URL
+const mongoUrl = process.env.MONGO_URL
 const app = express();
 
 // HANDLEBARS ENGINE
@@ -29,13 +27,11 @@ app.use(
     saveUninitialized: false,
     //conecta a la db con las configuraciones
     store: MongoStore.create({
-      mongoUrl: MONGO_URL,
+      mongoUrl: mongoUrl,
       ttl: 3600
   })
   })
 );
-app.use(passport.initialize())
-app.use(passport.session())
 
 // ROUTERS
 app.get("/", (req, res) => {
@@ -43,9 +39,9 @@ app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.get("/profile", authMeddleware, async (req, res) => {
+app.get("/profile", authMeddleware, (req, res) => {
   if (req.session.user) {
-    const user = await req.session.user;
+    const user = req.session.user;
     res.render("profile", { user });
   } else {
     res.redirect("/api/session/login");
@@ -55,15 +51,6 @@ app.get("/profile", authMeddleware, async (req, res) => {
 app.use("/api/session", sessionRouter);
 
 // RUN SERVER
-mongoose.set('strictQuery', false);
-mongoose.connect(MONGO_URL)
-  .then(() => {
-    const server = app.listen(PORT, () => {
-      console.log(`Server is up and running on port ${server.address().port}`);
-    });
-    server.on('error', (error) => {
-      console.log('Error starting Server');
-      console.error(error);
-    });
-  });
-
+app.listen(PORT, () => {
+  console.log("server running on port 8080");
+});
