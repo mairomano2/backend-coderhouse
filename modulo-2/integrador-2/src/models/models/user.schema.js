@@ -29,10 +29,10 @@ const UserSchema = new Schema({
     type: String,
     enum: Object.values(userRoles)
    },
-   courses: {
-    type: Schema.Types.ObjectId,
-    ref: "courses"
-   }
+  //  carts: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "courses"
+  //  }
 })
 
 const UserModel = mongoose.model(collection, UserSchema)

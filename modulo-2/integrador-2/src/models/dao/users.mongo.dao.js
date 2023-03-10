@@ -10,8 +10,13 @@ class UsersMongoDAO {
   }
 
   async getById(id){
-    const users = await UserModel.findById(id, { __v: false}).lean()
-    return users
+    const user = await UserModel.findById(id, { __v: false}).lean()
+    return user
+  }
+
+  async getByEmail(email){
+    const user = await UserModel.findOne( email , {__v: false}).lean()
+    return user
   }
 
   async create(payload){
@@ -28,6 +33,15 @@ class UsersMongoDAO {
     const user = await UserModel.findByIdAndDelete(id)
     return user
   }
+
+  // // funcion para hacer populacion de los carritos de un usuario
+  // async userSavedProducts(cartId, userId){
+  //   const updateProducts = await UserModel.updateOne({ _id: userId })
+  //   $push: { 
+  //     carts: cartId
+  //   }
+  //   return updateProducts
+  // }
 }
 
 module.exports = UsersMongoDAO

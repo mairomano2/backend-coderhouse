@@ -1,8 +1,8 @@
-const express = require("express")
-require("dotenv").config()
-const apiRouter = require("./routers/apiRouter")
-const config = require("./config/config")
-const PORT = process.env.PORT
+const express = require("express");
+require("dotenv").config();
+require("./config/config");
+const apiRouter = require("./routers/apiRouter");
+const PORT = process.env.PORT;
 
 // Instanciamos servidor express
 const app = express();
@@ -14,8 +14,8 @@ app.use(express.static("public"));
 
 // Rutas
 app.get("/", (req, res) => {
-  res.send("hola")
-})
+  res.send("hola");
+});
 app.use("/api", apiRouter);
 
 // Listen

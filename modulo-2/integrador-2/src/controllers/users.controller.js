@@ -71,6 +71,15 @@ class UsersController {
       next(error);
     }
   }
+
+  // static async userSavedProducts(req, res, next){
+  //   const { cartId, userId } = req.body
+  //   try {
+  //     const updateUser = products
+  //   } catch (error) {
+  //     next(error)
+  //   }
+  // }
 }
 
 module.exports = UsersController;
