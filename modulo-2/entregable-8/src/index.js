@@ -1,11 +1,11 @@
 const express = require("express");
 const hanblebars = require("express-handlebars");
 const MongoStore = require("connect-mongo")
+require("dotenv").config()
 const sessionRouter = require("./routers/sessionRouter");
-const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const authMeddleware = require("./middlewares/auth.meddleware");
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT
 const mongoUrl = process.env.MONGO_URL
 const app = express();
 
@@ -18,7 +18,6 @@ app.set("view engine", "handlebars");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("../public"));
-app.use(cookieParser());
 app.use(
   session({
     name: "session1",

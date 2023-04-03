@@ -15,7 +15,8 @@ router.post("/register", (req, res) => {
   } else {
     if (req.body.email && req.body.firstName) {
       req.session.isAdmin =
-        req.body.email.split("@")[1].includes("admin") ?? false;
+      req.body.email.split("@")[1].includes("admin") ?? false;
+
       req.session.user = {
         email: req.body.email,
         firstName: req.body.firstName,
