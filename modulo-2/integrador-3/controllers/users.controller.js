@@ -1,13 +1,13 @@
 const httpStatus = require("../constants/statusCodes");
-const UsersMongoDAO = require("../models/dao/users.mongo.dao");
 const { apiSucessResponse } = require("../utils/apiResponses.utils");
+const UsersRepositories = require("../models/reporitories/users.repository")
 
-const usersMongoDAO = new UsersMongoDAO();
+const usersRepositories = new UsersRepositories();
 
 class UsersController {
   static async getAll(req, res, next) {
     try {
-      const users = await usersMongoDAO.getAll();
+      const users = await usersRepositories.getAll()
       const response = apiSucessResponse(users);
       res.status(httpStatus.ok).json(response);
     } catch (error) {
@@ -17,9 +17,8 @@ class UsersController {
 
   static async getById(req, res, next) {
     const id = req.params.id
-    console.log(id);
     try {
-      const user = await usersMongoDAO.getById(id);
+      const user = await usersRepositories.getById(id)
       if (!user) {
         throw new Error({ status: 404, description: "user not found" });
       } else {
@@ -34,9 +33,13 @@ class UsersController {
   static async create(req, res, next) {
     const payload = req.body;
     try {
-      const newUser = await usersMongoDAO.create(payload);
-      const response = apiSucessResponse(newUser);
-      res.status(httpStatus.created).json(response);
+      if( !payload.firstName || !payload.email){
+        throw new Error("missing fields")
+      } else {
+        const newUser = await usersRepositories.createUser(payload)
+        const response = apiSucessResponse(newUser);
+        res.status(httpStatus.created).json(response);
+      }
     } catch (error) {
       next(error);
     }
@@ -46,7 +49,7 @@ class UsersController {
     const id = req.params.id;
     const payload = req.body;
     try {
-      const updatedUser = await usersMongoDAO.updateById(id, payload);
+      const updatedUser = await usersRepositories.updateUser(id, payload)
       if (!updatedUser) {
         throw new Error("user not found");
       } else {
@@ -61,7 +64,7 @@ class UsersController {
   static async delete(req, res, next) {
     const { id } = req.params;
     try {
-      const deletedUser = await usersMongoDAO.delete(id);
+      const deletedUser = await usersRepositories.deleteUser(id)
       if (!deletedUser) {
         throw new Error("user not found");
       } else {

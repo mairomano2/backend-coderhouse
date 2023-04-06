@@ -22,7 +22,6 @@ class SessionController {
       } else {
         // se crea el token del usuario
         const accessToken = generateToken(user);
-        console.log(accessToken)
         // se setea la cookie con la secretkey, payload y obj de configuracion
         res.cookie(secretKey, accessToken, {
           maxAge: 60 * 60 * 60 * 24 * 1000,

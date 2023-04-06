@@ -10,22 +10,24 @@ class ProductsMongoDAO {
   }
 
   async getById(id){
-    const products = await ProductsModel.findById({_id : id }).lean()
-    return products
+    const product = await ProductsModel.findById({_id : id }).lean()
+    return product
   }
 
-  async create(payload){
+  async createProduct(payload){
     const newProduct = await ProductsModel.create(payload)
     return newProduct
   }
 
-  async updateById(id, payload) {
+  async updateProduct(id, payload) {
     const updateProduct = ProductsModel.findByIdAndUpdate(id, payload, {new : true})
     return updateProduct
   }
 
-  async delete(id){
-    const product = await ProductsModel.findByIdAndDelete(id)
+  async deleteProduct(id){
+    console.log("prodID", id)
+    const product = await ProductsModel.findByIdAndDelete({_id: id})
+    console.log("prod", product)
     return product
   }
 }

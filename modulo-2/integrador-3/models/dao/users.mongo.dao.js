@@ -20,17 +20,17 @@ class UsersMongoDAO {
     return user
   }
 
-  async create(payload){
+  async createUser(payload){
     const newUser = await UserModel.create(payload)
     return newUser
   }
 
-  async updateById(id, payload) {
+  async updateUser(id, payload) {
     const updatedUser = UserModel.findByIdAndUpdate(id, payload, {new : true})
     return updatedUser
   }
 
-  async delete(id){
+  async deleteUser(id){
     const user = await UserModel.findByIdAndDelete(id)
     return user
   }

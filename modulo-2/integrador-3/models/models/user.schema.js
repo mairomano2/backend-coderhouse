@@ -4,7 +4,7 @@ const userRoles = require("../../constants/userRoles")
 const { Schema } = mongoose
 const collection = "users"
 const UserSchema = new Schema({
-  name: {
+  firstName: {
     type: String,
     required: true
   },
@@ -20,7 +20,8 @@ const UserSchema = new Schema({
     unique: true
   },
    password: {
-    type: String
+    type: String,
+    required: true
    },
    githubUsername: {
     type: String

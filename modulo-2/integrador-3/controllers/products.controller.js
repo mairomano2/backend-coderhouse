@@ -1,13 +1,13 @@
 const httpStatus = require("../constants/statusCodes");
-const ProductsMongoDAO = require("../models/dao/products.mongo.dao");
-const { apiSucessResponse } = require("../utils/apiResponses.utils");
+const { apiSucessResponse } = require("../utils/apiResponses.utils")
+const ProductsRepository = require("../models/reporitories/products.repository");
 
-const productsMongoDAO = new ProductsMongoDAO();
+const productsRepository = new ProductsRepository();
 
 class ProductsController {
   static async getAll(req, res, next) {
     try {
-      const products = await productsMongoDAO.getAll();
+      const products = await productsRepository.getAll();
       const response = apiSucessResponse(products);
       res.status(httpStatus.ok).json(response);
     } catch (error) {
@@ -18,7 +18,7 @@ class ProductsController {
   static async getById(req, res, next) {
     const { id } = req.params;
     try {
-      const product = await productsMongoDAO.getById(id);
+      const product = await productsRepository.getById(id);
       if (!product) {
         throw new Error({ status: 404, description: "product not found" });
       } else {
@@ -30,10 +30,10 @@ class ProductsController {
     }
   }
 
-  static async create(req, res, next) {
+  static async createProduct(req, res, next) {
     const payload = req.body;
     try {
-      const newProduct = await productsMongoDAO.create(payload);
+      const newProduct = await productsRepository.createProduct(payload);
       const response = apiSucessResponse(newProduct);
       res.status(httpStatus.created).json(response);
     } catch (error) {
@@ -41,11 +41,11 @@ class ProductsController {
     }
   }
 
-  static async updateById(req, res, next) {
+  static async updateProduct(req, res, next) {
     const id = req.params.id;
     const payload = req.body;
     try {
-      const updateProduct = await productsMongoDAO.updateById(id, payload);
+      const updateProduct = await productsRepository.updateProduct(id, payload);
       if (!updateProduct) {
         throw new Error("product not found");
       } else {
@@ -57,10 +57,10 @@ class ProductsController {
     }
   }
 
-  static async delete(req, res, next) {
+  static async deleteProduct(req, res, next) {
     const { id } = req.params;
     try {
-      const deleteProduct = await productsMongoDAO.delete(id);
+      const deleteProduct = await productsRepository.deleteProduct(id);
       if (!deleteProduct) {
         throw new Error("product not found");
       } else {
