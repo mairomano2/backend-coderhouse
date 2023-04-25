@@ -1,5 +1,6 @@
 const UsersMongoDAO = require("../dao/users.mongo.dao")
 const { SaveUserDTO, UpdateUserDTO } = require("../dto/users.dto")
+const { hashPassword } = require("../../utils/hashPassword.utils")
 
 const usersDAO = new UsersMongoDAO()
 

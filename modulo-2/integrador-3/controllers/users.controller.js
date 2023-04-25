@@ -1,6 +1,7 @@
 const httpStatus = require("../constants/statusCodes");
 const { apiSucessResponse } = require("../utils/apiResponses.utils");
 const UsersRepositories = require("../models/reporitories/users.repository")
+const hashPassword = require("../utils/hashPassword.utils")
 
 const usersRepositories = new UsersRepositories();
 

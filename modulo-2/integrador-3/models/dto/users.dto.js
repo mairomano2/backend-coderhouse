@@ -1,3 +1,5 @@
+const { hashPassword } = require("../../utils/hashPassword.utils")
+
 class SaveUserDTO {
   constructor(payload) {
     this.firstName = payload.firstName;
@@ -5,7 +7,7 @@ class SaveUserDTO {
     this.githubUsername = payload.githubUsername || "";
     this.email = payload.email;
     this.age = payload.age;
-    this.password = payload.password;
+    this.password =  hashPassword(payload.password)
     this.role = payload.role;
     this.active = true;
   }

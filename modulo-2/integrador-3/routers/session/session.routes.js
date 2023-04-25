@@ -1,10 +1,10 @@
 const { Router } = require("express");
 const SessionController = require("../../controllers/sessions.controller");
-const passportCustom = require("../../middlewares/passport.middleware");
+const activeSession = require("../../middlewares/session.middleware");
 
 const router = Router();
 
-router.post("/login", SessionController.login);
-router.get("/current", passportCustom("jwt"), SessionController.currentSession);
+router.post("/login", activeSession, SessionController.login);
+router.get("/current", activeSession, SessionController.currentSession);
 
 module.exports = router;
