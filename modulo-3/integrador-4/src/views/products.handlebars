@@ -1,0 +1,8 @@
+<div>
+  <h1>Products</h1>
+  {{#each products}}
+    <p>{{this.title}}</p>
+    <p>${{this.price}}</p>
+    <button onclick="addButton">Add to cart</button>
+  {{/each}}
+</div>

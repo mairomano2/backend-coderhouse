@@ -2,6 +2,7 @@ const express = require("express");
 const session = require("express-session");
 const cookieParser = require("cookie-parser");
 const passport = require("passport");
+const hanblebars = require("express-handlebars");
 require("dotenv").config();
 require("./config/config");
 const apiRouter = require("./routers/apiRouter");
@@ -37,6 +38,9 @@ const spec = swaggerJsDoc(swaggerOptions);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.engine("handlebars", hanblebars.engine());
+app.set("views", __dirname + "/views");
+app.set("view engine", "handlebars");
 app.use(
   session({
     secret: SECRET_KEY,

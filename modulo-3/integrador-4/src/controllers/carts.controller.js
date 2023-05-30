@@ -9,7 +9,20 @@ class CartsController {
     try {
       const carts = await cartsRepository.getAll();
       const response = apiSucessResponse(carts);
-      res.status(httpStatus.ok).json(response);
+      const responsePayload = {
+        products: response.payload.map( user => {
+          return {
+            title: user.title,
+            description: user.description,
+            code: user.code,
+            price: user.price,
+            status: user.status,
+            stock: user.stock,
+            category: user.category,
+          }
+        })
+      }
+      res.status(httpStatus.ok).render("carts", responsePayload)
     } catch (error) {
       next(error);
     }
@@ -23,7 +36,20 @@ class CartsController {
         throw new Error({ status: 404, description: "cart not found" });
       } else {
         const response = apiSucessResponse(cart);
-        res.status(httpStatus.ok).json(response);
+        const responsePayload = {
+          products: response.payload.map( user => {
+            return {
+              title: user.title,
+              description: user.description,
+              code: user.code,
+              price: user.price,
+              status: user.status,
+              stock: user.stock,
+              category: user.category,
+            }
+          })
+        }
+        res.status(httpStatus.ok).render("carts", responsePayload);
       }
     } catch (error) {
       next(error);
