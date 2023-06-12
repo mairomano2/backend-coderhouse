@@ -62,7 +62,13 @@ class SessionController {
   }
 
   static async logout(req, res, next) {
-    res.send("hola");
+    if (!res.session.sessionUser) {
+      res.send("No hay una sesion iniciada");
+    } else {
+      req.session.destroy((err) => {
+        res.send("Session borrada");
+      });
+    }
   }
 }
 
