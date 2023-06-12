@@ -23,8 +23,8 @@ input.addEventListener("keyup", (event) => {
 });
 
 //renderiza el mensaje
-socket.on("showMessages", (data) => {
-  let html = data.map((message) => {
+socket.on("showMessages",async (data) => {
+  let html = await data.map((message) => {
     return renderMessage(message.userName, message.message)
   });
   messagesDiv.innerHTML = html;
