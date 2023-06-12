@@ -35,6 +35,10 @@ const ProductsSchema = new mongoose.Schema({
     type: Array,
     required: true,
   },
+  owner:{
+    type: String,
+    default: "admin"
+  }
 });
 
 const ProductsModel = mongoose.model(collection, ProductsSchema)

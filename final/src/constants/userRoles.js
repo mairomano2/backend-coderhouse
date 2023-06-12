@@ -1,4 +1,5 @@
 const userRoles = {
   user: "user",
-  admin: "admin"
+  admin: "admin",
+  premium: "premium"
 }

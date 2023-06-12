@@ -1,10 +1,6 @@
 const httpStatus = require("../constants/statusCodes");
-const UsersMongoDAO = require("../models/dao/users.mongo.dao");
 const UserModel = require("../models/models/user.schema");
-const {
-  apiSucessResponse,
-  apiErrorResponse,
-} = require("../utils/apiResponses.utils");
+const { apiSucessResponse } = require("../utils/apiResponses.utils");
 const { isValidPassword } = require("../utils/hashPassword.utils");
 const { generateToken } = require("../utils/sessions.utils");
 const secretKey = process.env.SECRET_KEY;
@@ -29,6 +25,7 @@ class SessionController {
           email: user.email,
           name: user.firstName,
           id: user._id,
+          role: user.role,
         };
         const accessToken = generateToken(sessionUser);
         res.cookie(secretKey, accessToken, {
