@@ -91,6 +91,9 @@ class ProductsController {
       const deleteProduct = await productsRepository.deleteProduct(id);
       if (!deleteProduct) {
         throw new Error("product not found");
+      }else if(req.session.sessionUser.email !== deleteProduct.owner){
+        console.log(req.session.sessionUser.email, deleteProduct.owner)
+        throw new Error("No tiene los permisos para realizar esta accion")
       } else {
         const response = apiSucessResponse(deleteProduct);
         res.status(httpStatus.ok).json(response);
