@@ -33,7 +33,6 @@ class SessionController {
           httpOnly: true,
         });
         req.session.sessionUser = sessionUser;
-        console.log("created", req.session.sessionUser);
         const response = apiSucessResponse(user);
         res.status(httpStatus.ok).json(response);
       }

@@ -19,6 +19,7 @@ class ProductsController {
             status: user.status,
             stock: user.stock,
             category: user.category,
+            owner: user.owner
           }
         })
       }
@@ -57,7 +58,8 @@ class ProductsController {
   }
 
   static async createProduct(req, res, next) {
-    const payload = req.body;
+    const user = req.session.sessionUser
+    const payload = { ...req.body, owner: user.email}
     try {
       const newProduct = await productsRepository.createProduct(payload);
       const response = apiSucessResponse(newProduct);

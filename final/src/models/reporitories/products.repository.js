@@ -15,6 +15,7 @@ class ProductsRepository{
   }
 
   async createProduct(payload){
+    console.log("Product payload", payload)
     const productPayload = new SaveProductDTO(payload)
     const product = await productDAO.createProduct(productPayload)
     return product

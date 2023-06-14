@@ -1,18 +1,28 @@
 const adminAuth = (req, res, next) => {
-  console.log("role:", req.session.sessionUser.role)
-  if(req.session.sessionUser.role !== "admin"){
-    throw new Error("No tiene los permisos para acceder a este recurso")
+  
+  if (req.session.sessionUser.role !== "admin") {
+    throw new Error("No tiene los permisos para acceder a este recurso");
   } else {
-    next()
+    next();
   }
-}
+};
 
 const premiumAuth = (req, res, next) => {
-  if(req.session.sessionUser.role !== "premium"){
-    throw new Error("No tiene los permisos para acceder a este recurso")
+  if (req.session.sessionUser.role !== "premium") {
+    throw new Error("No tiene los permisos para acceder a este recurso");
   } else {
-    next()
+    next();
   }
-}
+};
 
-module.exports = { adminAuth, premiumAuth}
+const generalAuth = (req, res, next) => {
+  if (req.session.sessionUser.role === "admin" || "premium") {
+    next();
+  } else {
+    throw new Error("No tiene los permisos para acceder a este recurso");
+  }
+};
+
+
+
+module.exports = { adminAuth, premiumAuth, generalAuth };

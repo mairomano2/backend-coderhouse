@@ -8,6 +8,7 @@ class SaveProductDTO {
     this.stock = payload.stock;
     this.category = payload.category;
     this.thumbnails = payload.thumbnails;
+    this.owner = payload.owner
   }
 }
 
@@ -22,6 +23,7 @@ class UpdateProductDTO {
     this.stock = payload.stock;
     this.category = payload.category;
     this.thumbnails = payload.thumbnails;
+    this.owner = payload.owner
   }
 }
 
