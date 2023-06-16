@@ -14,6 +14,8 @@ const swaggerJsDoc = require("swagger-jsdoc");
 const swaggerUiExpress = require("swagger-ui-express"); // se usa serve y setup
 const PORT = process.env.PORT;
 const SECRET_KEY = process.env.SECRET_KEY;
+const path = require("path");
+
 
 // Instanciamos servidor express
 const app = express();
@@ -39,7 +41,7 @@ const spec = swaggerJsDoc(swaggerOptions);
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static("../public"));
+app.use("/statics", express.static(path.resolve(__dirname, "../public")))
 
 app.engine("handlebars", handlebars.engine());
 app.set("views", __dirname + "/views");
