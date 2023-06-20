@@ -1,5 +1,7 @@
 const jwt = require("jsonwebtoken");
 const secretKey = process.env.SECRET_KEY;
+const UserDAO = require("../models/dao/users.mongo.dao")
+const userDAO = new UserDAO
 
 const generateToken = (user) => {
   // sign firma la info del header para verificar que es segura. no ecripta la data del header
@@ -8,14 +10,16 @@ const generateToken = (user) => {
   return token;
 };
 
-// se usa en passport para traer el token de la cookie. tiene acceso al req
-const cookieExtractor = (req) => {
-  let token = null;
-  // el token si req.cookies viene vacio queda en null y sino se le asigna el valor de la cookie
-  if (req && req.cookies) {
-    let token = req.cookies[secretKey];
+const changeLastConnection = async (sessionUser) => {
+  try {
+    const id = sessionUser.id
+    const payload = { lastConnection: new Date().toString() };
+    sessionUser.lastConnection = payload
+    const lastSession = await userDAO.updateUser(id, payload)
+    return lastSession
+  } catch (error) {
+    throw new Error(error);
   }
-  return token;
 };
 
-module.exports = { generateToken, cookieExtractor };
+module.exports = { generateToken, changeLastConnection };

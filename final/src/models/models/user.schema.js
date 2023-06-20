@@ -31,6 +31,9 @@ const UserSchema = new Schema({
     default: "user",
     enum: Object.values(userRoles),
   },
+  lastConnection: {
+    type: String
+  }
 });
 
 const UserModel = mongoose.model(collection, UserSchema);

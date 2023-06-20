@@ -2,8 +2,9 @@ const httpStatus = require("../constants/statusCodes");
 const UserModel = require("../models/models/user.schema");
 const { apiSucessResponse } = require("../utils/apiResponses.utils");
 const { isValidPassword } = require("../utils/hashPassword.utils");
-const { generateToken } = require("../utils/sessions.utils");
+const { generateToken, changeLastConnection } = require("../utils/sessions.utils");
 const secretKey = process.env.SECRET_KEY;
+
 
 class SessionController {
   static async login(req, res, next) {
@@ -26,13 +27,19 @@ class SessionController {
           name: user.firstName,
           id: user._id,
           role: user.role,
+          lastConnection: user.lastConnection
         };
+
+        req.session.sessionUser = sessionUser;
+
+        const result = await changeLastConnection(sessionUser)
+        console.log(result)
+
         const accessToken = generateToken(sessionUser);
         res.cookie(secretKey, accessToken, {
           maxAge: 60 * 60 * 60 * 24 * 1000,
           httpOnly: true,
         });
-        req.session.sessionUser = sessionUser;
         const response = apiSucessResponse(user);
         res.status(httpStatus.ok).json(response);
       }
@@ -58,11 +65,12 @@ class SessionController {
   }
 
   static async logout(req, res, next) {
-    if (!res.session.sessionUser) {
+    if (!req.session.sessionUser) {
       res.send("No hay una sesion iniciada");
     } else {
-      req.session.destroy((err) => {
-        res.send("Session borrada");
+      await changeLastConnection(req.session.sessionUser)
+      req.session.destroy(async (err) => {
+        res.send("se borro la sesion");
       });
     }
   }

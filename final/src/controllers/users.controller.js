@@ -2,6 +2,7 @@ const httpStatus = require("../constants/statusCodes");
 const { apiSucessResponse } = require("../utils/apiResponses.utils");
 const UsersRepositories = require("../models/reporitories/users.repository");
 const hashPassword = require("../utils/hashPassword.utils");
+const { changeLastConnection } = require("../utils/sessions.utils")
 
 const usersRepositories = new UsersRepositories();
 
@@ -32,7 +33,8 @@ class UsersController {
   }
 
   static async create(req, res, next) {
-    const payload = req.body;
+    const lastConnection = await changeLastConnection(req.session)
+    const payload = {...req.body, lastConnection: lastConnection}
     try {
       if (!payload.firstName || !payload.email) {
         throw new Error("missing fields");

@@ -1,6 +1,5 @@
 const UsersMongoDAO = require("../dao/users.mongo.dao")
 const { SaveUserDTO, UpdateUserDTO } = require("../dto/users.dto")
-const { hashPassword } = require("../../utils/hashPassword.utils")
 
 const usersDAO = new UsersMongoDAO()
 
@@ -23,7 +22,7 @@ class UsersRepository{
   }
 
   async updateUser(id, payload){
-    const userPayload = new UpdateUserDTO(payload)
+    const userPayload = new SaveUserDTO(payload)
     const user = await usersDAO.updateUser(id, userPayload)
     return user
   }

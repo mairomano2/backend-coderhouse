@@ -10,6 +10,7 @@ class SaveUserDTO {
     this.password =  hashPassword(payload.password)
     this.role = payload.role;
     this.active = true;
+    this.lastConnection = payload.lastConnection;
   }
 }
 
