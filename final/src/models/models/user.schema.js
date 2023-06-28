@@ -3,6 +3,7 @@ const userRoles = require("../../constants/userRoles");
 
 const { Schema } = mongoose;
 const collection = "users";
+
 const UserSchema = new Schema({
   firstName: {
     type: String,
@@ -32,8 +33,14 @@ const UserSchema = new Schema({
     enum: Object.values(userRoles),
   },
   lastConnection: {
-    type: String
-  }
+    type: String,
+  },
+  // documents: [
+  //   {
+  //     name: String,
+  //     reference: String
+  //   }
+  // ]
 });
 
 const UserModel = mongoose.model(collection, UserSchema);

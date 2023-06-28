@@ -1,8 +1,7 @@
 const httpStatus = require("../constants/statusCodes");
 const { apiSucessResponse } = require("../utils/apiResponses.utils");
 const UsersRepositories = require("../models/reporitories/users.repository");
-const hashPassword = require("../utils/hashPassword.utils");
-const { changeLastConnection } = require("../utils/sessions.utils")
+const { changeLastConnection } = require("../utils/sessions.utils");
 
 const usersRepositories = new UsersRepositories();
 
@@ -33,8 +32,8 @@ class UsersController {
   }
 
   static async create(req, res, next) {
-    const lastConnection = await changeLastConnection(req.session)
-    const payload = {...req.body, lastConnection: lastConnection}
+    const lastConnection = await changeLastConnection(req.session);
+    const payload = { ...req.body, lastConnection: lastConnection };
     try {
       if (!payload.firstName || !payload.email) {
         throw new Error("missing fields");
@@ -81,16 +80,35 @@ class UsersController {
 
   static async changeRole(req, res, next) {
     try {
-      const role = req.session.sessionUser.role;
-      switch (role) {
-        case "premium":
-          req.session.sessionUser.role = "user";
-          break;
-        case "user":
-          req.session.sessionUser.role = "premium";
+      const { id } = req.params;
+      const user = await usersRepositories.getById(id);
+      if (
+        user.documents.profile &&
+        user.documents.products &&
+        user.documents.documents
+      ) {
+        req.session.sessionUser.role = "premium";
+        res.send("Rol actualizado");
+      } else {
+        res.send("Faltan subir documentos para cambiar el rol");
       }
     } catch (error) {
       next(error);
+    }
+  }
+
+  static async addProfile(req, res) {
+    if (!req.file) {
+      res.status(400).json({
+        status: error,
+        error: "no se cargo ningun archivo",
+      });
+    } else {
+      const { id } = req.params;
+      const payload = { name: req.file.originalname, reference: req.file.path };
+      const addDocs = await usersRepositories.updateUser(id, payload);
+      const response = apiSucessResponse(addDocs);
+      res.status(httpStatus.ok).send(response);
     }
   }
 }

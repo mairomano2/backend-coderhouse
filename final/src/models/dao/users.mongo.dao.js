@@ -26,6 +26,7 @@ class UsersMongoDAO {
   }
 
   async updateUser(id, payload) {
+    console.log("payload", payload)
     const updatedUser = await UserModel.findByIdAndUpdate(id, payload, {new : true})
     return updatedUser
   }
@@ -34,15 +35,6 @@ class UsersMongoDAO {
     const user = await UserModel.findByIdAndDelete(id)
     return user
   }
-
-  // // funcion para hacer populacion de los carritos de un usuario
-  // async userSavedProducts(cartId, userId){
-  //   const updateProducts = await UserModel.updateOne({ _id: userId })
-  //   $push: { 
-  //     carts: cartId
-  //   }
-  //   return updateProducts
-  // }
 }
 
 module.exports = UsersMongoDAO

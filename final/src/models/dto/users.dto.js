@@ -7,7 +7,7 @@ class SaveUserDTO {
     this.githubUsername = payload.githubUsername || "";
     this.email = payload.email;
     this.age = payload.age;
-    this.password =  hashPassword(payload.password)
+    this.password = hashPassword(payload.password)
     this.role = payload.role;
     this.active = true;
     this.lastConnection = payload.lastConnection;

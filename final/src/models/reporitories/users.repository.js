@@ -22,8 +22,7 @@ class UsersRepository{
   }
 
   async updateUser(id, payload){
-    const userPayload = new SaveUserDTO(payload)
-    const user = await usersDAO.updateUser(id, userPayload)
+    const user = await usersDAO.updateUser(id, payload)
     return user
   }
 

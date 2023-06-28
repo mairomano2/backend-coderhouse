@@ -4,8 +4,6 @@ const UserDAO = require("../models/dao/users.mongo.dao")
 const userDAO = new UserDAO
 
 const generateToken = (user) => {
-  // sign firma la info del header para verificar que es segura. no ecripta la data del header
-  // recibe 3 parametros: data, secret key y obj de configuracion del token
   const token = jwt.sign(user, secretKey, { expiresIn: "24h" });
   return token;
 };
